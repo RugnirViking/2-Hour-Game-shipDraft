@@ -87,6 +87,7 @@ class Ship(object):
         self.parts.append(armour)
         self.powerRemaining-=armour.powerUse
         self.hitPoints+=armour.hp
+        self.slots-=armour.size
     def addHull(self,hull):
         self.hull = hull
         self.hitPoints+=hull.hitPoints
@@ -101,8 +102,11 @@ class Ship(object):
             print("It has "+str(self.shield)+" shield.")
             print("It has "+str(self.hitPointsRegen)+" repair.")
             print("It has "+str(self.powerRemaining)+" power remaining.")
-            print("It has "+str(self.slots)+" slots remaining.")
-
+            print("It has "+str(self.slots)+" slots remaining.\n")
+            if len(self.parts)>0:
+                print("It has the following parts equipped:")
+                for part in self.parts:
+                    print(" - "+part.name)
 def getUserInt(message):
   while True:
     try:
@@ -125,7 +129,7 @@ def draft(partsLibrary,userShip):
         parts.append(part)
         partNames.append(part.name)
     selection = getUserInt("Please select a part by number: ")
-    selectedPart = parts[selection]
+    selectedPart = parts[selection-1]
     return selectedPart
 
 def draw(partsLibrary,num,partNames):
@@ -209,12 +213,68 @@ print("\t\t  Then fight against a random AI")
 print("\tFirst of all, you have to choose a Hull for the ship to be based on.\n\tRemember, you only get a maximum of 100 coins to spend so choose wisely!")
 userShip = Ship()
 userShip.toConsole()
-print("Press any key to continue to the first draft...")
-
-m.getch()
-
+def PressAnyKeyToContinue():
+    print("Press any key to continue...")
+    m.getch()
+PressAnyKeyToContinue()
 hull = draft(ships,userShip)
 userShip.addHull(hull)
 
 armour = draft(armours,userShip)
 userShip.addArmour(armour)
+armour = draft(armours,userShip)
+userShip.addArmour(armour)
+armour = draft(armours,userShip)
+userShip.addArmour(armour)
+
+enemyShip = Ship()
+hullName,hullPrice,hullHitPoints,hullCapacity,hullPower,hullHitPointsRegen,hullShield, hullRarity
+enemyShip.addHull(Hull("Imperator II",200,200,100,50,10,0,3))
+enemyShip.addArmour(Armour("Armour I",10,10,1,1,0))
+enemyShip.addArmour(Armour("Armour I",10,10,1,1,0))
+class FightShip(object):
+    def __init__(self,ship):
+        self.ship=ship
+        self.hp = ship.hitPoints
+def winnerIsYou():
+    os.system('cls')
+    print("WINNER IS YOU")
+    PressAnyKeyToContinue()
+    sys.exit(0)
+def scrub():
+    os.system('cls')
+    print("YOUZ BAD N00B")
+    PressAnyKeyToContinue()
+    sys.exit(0)
+def round(playerFightShip,enemyFightShip):
+    os.system('cls')
+    print("you shoot the enemy for 10 damage")
+    enemyFightShip.hp-=10
+    print("this leaves him on "+str(enemyFightShip.hp)+" hp.")
+    if(enemyFightShip.hp<1):
+        PressAnyKeyToContinue()
+        winnerIsYou()
+    else:
+        print("enemy shoots you for 10 damage")
+        playerFightShip.hp-=10
+        print("this leaves you on "+str(playerFightShip.hp)+" hp.")
+        if (playerFightShip.hp<1):
+            PressAnyKeyToContinue()
+            skrub()
+        else:
+            print("Noone died yet. Ready for next round?")
+            PressAnyKeyToContinue()
+            round(playerFightShip,enemyFightShip)
+
+def fight(playerShip,enemyShip):
+    os.system('cls')
+    print("Two ships are going to battle.")
+    print("_______________________  Your Ship:  _______________________\n\n")
+    playerShip.toConsole()
+    print("_______________________  Enemy Ship:  _______________________\n\n")
+    enemyShip.toConsole()
+    PressAnyKeyToContinue()
+    playerFightShip = FightShip(playerShip)
+    enemyFightShip = FightShip(enemyShip)
+    round(playerFightShip,enemyFightShip)
+fight(userShip,enemyShip)
