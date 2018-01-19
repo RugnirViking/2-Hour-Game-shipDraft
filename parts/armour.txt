@@ -1,0 +1,10 @@
+Iron Mesh I,20,20,1,0,1
+Iron Plating I,40,40,2,0,1
+Iron Plating II,60,50,3,0,1
+Steel Plating I,40,80,2,0,1
+Steel Plating II,60,100,3,0,2
+Aluminium Plating I,30,30,1,0,2
+Advanced Metullargy Plating I,80,200,3,0,3
+Powered Armour I,30,50,2,2,1
+Powered Armour II,60,80,2,4,2
+Powered Armour III,90,150,2,5,3
