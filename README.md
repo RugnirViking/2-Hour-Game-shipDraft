@@ -41,7 +41,11 @@ Sure, the game wasn't quite what I was imagining halfway through and sure, the g
 
 ## Known issues (very glaring ones)
 You have 1000 coins but the title screen says 100
+
 On the first pick (hulls) it doesn't show the stats of the hulls
+
 When using rarities of more than epic, they are never chosen (none included with the 2 hour files)
+
 The strategy to win is very simple (always pick highest hp armour and so long as you get more than 220 you win)
+
 
