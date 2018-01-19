@@ -51,7 +51,7 @@ class Hull(Item):
         print("\tType: Hull (SPECIAL)")
         print("\tRarity: "+RarityToString(self.rarity)+"\n")
 
-def draw(partsLibrary):
+def draw(partsLibrary,num):
     commonParts = list()
     rareParts = list()
     epicParts = list()
@@ -64,10 +64,19 @@ def draw(partsLibrary):
         elif part.rarity == Rarity.EPIC:
             epicParts.append(part)
         # TODO: ill add more rarities later
-        
-    print random.randrange(1,1000)
     
-
+    roll = random.randrange(1,1000)
+    part = 0
+    if roll<900:
+        ## common time
+        part = commonParts[random.randrange(len(commonParts))]
+    elif roll<970:
+        ## rare time
+        part = rareParts[random.randrange(len(rareParts))]
+    elif roll<990:
+        ## epic time
+        part = epicParts[random.randrange(len(epicParts))]
+    part.toConsole(num)
 
 ships = list()
 file_object  = open("./parts/hulls.txt","r")
@@ -89,8 +98,7 @@ print("\t\tYou build a ship in 20 draft choices")
 print("\t\t  Then fight against a random AI")
 print("\tFirst of all, you have to choose a Hull for the ship to be based on.\n\tRemember, you only get a maximum of 100 coins to spend so choose wisely!")
 print("\nYour Coins: " + str(playerMoney)+"\n")
-pickNum=1
-draw(ships)
-# for hull in ships:
-#     hull.toConsole(pickNum)
-#     pickNum+=1
+
+
+for x in range(0, 3):
+    draw(ships,x)
