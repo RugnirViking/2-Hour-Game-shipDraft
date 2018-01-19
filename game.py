@@ -2,6 +2,7 @@
 import os
 import sys
 import random
+import msvcrt as m
 from enum import Enum
 
 playerMoney = 1000
@@ -39,11 +40,14 @@ class Item(object):
         self.type = typeName
 
 class Hull(Item):
-    def __init__(self, name, price, hitPoints, capacity, rarity):
+    def __init__(self, name, price, hitPoints, capacity, power,hpregen,shield, rarity):
         Item.__init__(self, name, price, "Hull")
         self.hitPoints = hitPoints
         self.capacity = capacity
         self.rarity = rarity
+        self.power = power
+        self.shield = shield
+        self.hpregen = hpregen
     def toConsole(self,num):
         print("\t\tPick number "+str(num)+") [[ "+self.name+" ]]")
         print("\tCost:")
@@ -51,13 +55,53 @@ class Hull(Item):
         print("\tHP:")
         print("\tType: Hull (SPECIAL)")
         print("\tRarity: "+RarityToString(self.rarity)+"\n")
-
+class Part(Item):
+    def __init__(self, name, price, typeName, rarity, size, powerUse):
+        Item.__init__(self, name, price, typeName)
+        self.rarity = rarity
+        self.size = size
+        self.powerUse = powerUse
+class Armour(Part):
+    def __init__(self, name, hp, price, rarity, size, powerUse):
+        Part.__init__(self, name, price, "Armour",rarity,size,powerUse)
+        self.hp = hp
+    def toConsole(self,num):
+        print("\t\tPick number "+str(num)+") [[ "+self.name+" ]]")
+        print("\tCost:"+str(self.price))
+        print("\tSize:"+str(self.size))
+        print("\tAdditional HP:"+str(self.hp))
+        print("\tType: Armour")
+        print("\tRarity: "+RarityToString(self.rarity)+"\n")
 class Ship(object):
-    def __init__(self, hull):
-        self.hull = hull
+    def __init__(self):
         self.parts = list()
+        self.hull = False
+        self.hitPoints = 0
+        self.slots = 0
+        self.powerRemaining = 0
+        self.hitPointsRegen = 0
+        self.shield = 0
     def addPart(self, part):
         self.parts.append(part)
+    def addArmour(self,armour):
+        self.parts.append(armour)
+        self.powerRemaining-=armour.powerUse
+        self.hitPoints+=armour.hp
+    def addHull(self,hull):
+        self.hull = hull
+        self.hitPoints+=hull.hitPoints
+        self.powerRemaining+=hull.power
+        self.slots+=hull.capacity
+        self.hitPointsRegen+=hull.hpregen
+        self.shield+=hull.shield
+    def toConsole(self):
+        if self.hull:
+            print("This ship is a "+self.hull.name+" class vessel ")
+            print("It has "+str(self.hitPoints)+" hitpoints.")
+            print("It has "+str(self.shield)+" shield.")
+            print("It has "+str(self.hitPointsRegen)+" repair.")
+            print("It has "+str(self.powerRemaining)+" power remaining.")
+            print("It has "+str(self.slots)+" slots remaining.")
 
 def getUserInt(message):
   while True:
@@ -68,15 +112,22 @@ def getUserInt(message):
        continue
     else:
        return userInput 
-       break
-def draft(partsLibrary):
+
+def draft(partsLibrary,userShip):
+    os.system('cls')
+    print("\nYour Coins: " + str(playerMoney)+"\n")
+    userShip.toConsole()
     parts = list()
     partNames = list()
-    for x in range(0, 3):
-        part = draw(ships,x,partNames)
+    for x in range(1, 4):
+        part = draw(partsLibrary,x,partNames)
         part.toConsole(x)
         parts.append(part)
         partNames.append(part.name)
+    selection = getUserInt("Please select a part by number: ")
+    selectedPart = parts[selection]
+    return selectedPart
+
 def draw(partsLibrary,num,partNames):
     commonParts = list()
     rareParts = list()
@@ -120,24 +171,50 @@ def draw(partsLibrary,num,partNames):
     part.toConsole(num)
 
 ships = list()
-file_object  = open("./parts/hulls.txt","r")
-for line in file_object: 
+ships_file_object  = open("./parts/hulls.txt","r")
+for line in ships_file_object: 
     lineStats = line.split(",")
 
     hullName = lineStats[0]
-    hullHitPoints = lineStats[1]
-    hullCapacity = lineStats[2]
-    hullPrice = lineStats[6]
+    hullHitPoints = int(lineStats[1])
+    hullCapacity = int(lineStats[2])
+    hullShield = int(lineStats[3])
+    hullHitPointsRegen = int(lineStats[4])
+    hullPower = int(lineStats[5])
+    hullPrice = int(lineStats[6])
     hullRarity = Rarity(int(lineStats[7]))
 
-    currentHull = Hull(hullName,hullPrice,hullHitPoints,hullCapacity,hullRarity)
+    currentHull = Hull(hullName,hullPrice,hullHitPoints,hullCapacity,hullPower,hullHitPointsRegen,hullShield, hullRarity)
     ships.append(currentHull)
+armours = list()
+armour_file_object  = open("./parts/armour.txt","r")
+for line in armour_file_object: 
+    lineStats = line.split(",")
+
+    armourName = lineStats[0]
+    armourHitPoints = int(lineStats[1])
+    armourPrice = int(lineStats[2])
+    armourSize = int(lineStats[3])
+    armourPowerUse = int(lineStats[4])
+    armourRarity = Rarity(int(lineStats[5]))
+
+    currentArmour = Armour(armourName,armourHitPoints,armourPrice,armourRarity,armourSize,armourPowerUse)
+    armours.append(currentArmour)
+
 os.system('cls')
 print("\t\t\tWelcome to shipBrawl")
 print("\t\t The draft-based space combat game")
 print("\t\tYou build a ship in 20 draft choices")
 print("\t\t  Then fight against a random AI")
 print("\tFirst of all, you have to choose a Hull for the ship to be based on.\n\tRemember, you only get a maximum of 100 coins to spend so choose wisely!")
-print("\nYour Coins: " + str(playerMoney)+"\n")
+userShip = Ship()
+userShip.toConsole()
+print("Press any key to continue to the first draft...")
 
-draft(ships)
+m.getch()
+
+hull = draft(ships,userShip)
+userShip.addHull(hull)
+
+armour = draft(armours,userShip)
+userShip.addArmour(armour)
