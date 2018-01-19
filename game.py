@@ -33,9 +33,10 @@ def RarityToString(rarity):
     else:
         return "???"+str(Rarity.COMMON==1)
 class Item(object):
-    def __init__(self, name, price, type):
+    def __init__(self, name, price, typeName):
         self.name = name
         self.price = price
+        self.type = typeName
 
 class Hull(Item):
     def __init__(self, name, price, hitPoints, capacity, rarity):
@@ -51,7 +52,32 @@ class Hull(Item):
         print("\tType: Hull (SPECIAL)")
         print("\tRarity: "+RarityToString(self.rarity)+"\n")
 
-def draw(partsLibrary,num):
+class Ship(object):
+    def __init__(self, hull):
+        self.hull = hull
+        self.parts = list()
+    def addPart(self, part):
+        self.parts.append(part)
+
+def getUserInt(message):
+  while True:
+    try:
+       userInput = int(input(message))       
+    except ValueError:
+       print("Please enter just a number")
+       continue
+    else:
+       return userInput 
+       break
+def draft(partsLibrary):
+    parts = list()
+    partNames = list()
+    for x in range(0, 3):
+        part = draw(ships,x,partNames)
+        part.toConsole(x)
+        parts.append(part)
+        partNames.append(part.name)
+def draw(partsLibrary,num,partNames):
     commonParts = list()
     rareParts = list()
     epicParts = list()
@@ -67,15 +93,30 @@ def draw(partsLibrary,num):
     
     roll = random.randrange(1,1000)
     part = 0
-    if roll<900:
+    if roll<800:
         ## common time
-        part = commonParts[random.randrange(len(commonParts))]
-    elif roll<970:
+        while True:
+            part = commonParts[random.randrange(len(commonParts))]
+            if not part.name in partNames:
+                return part
+    elif roll<950:
         ## rare time
-        part = rareParts[random.randrange(len(rareParts))]
+        while True:
+            part = rareParts[random.randrange(len(rareParts))]
+            if not part.name in partNames:
+                return part
     elif roll<990:
         ## epic time
-        part = epicParts[random.randrange(len(epicParts))]
+        while True:
+            part = epicParts[random.randrange(len(epicParts))]
+            if not part.name in partNames:
+                return part
+    else:
+        # wildcard
+        while True:
+            part = partsLibrary[random.randrange(len(partsLibrary))]
+            if not part.name in partNames:
+                return part
     part.toConsole(num)
 
 ships = list()
@@ -99,6 +140,4 @@ print("\t\t  Then fight against a random AI")
 print("\tFirst of all, you have to choose a Hull for the ship to be based on.\n\tRemember, you only get a maximum of 100 coins to spend so choose wisely!")
 print("\nYour Coins: " + str(playerMoney)+"\n")
 
-
-for x in range(0, 3):
-    draw(ships,x)
+draft(ships)
