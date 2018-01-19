@@ -1,4 +1,11 @@
-# 2-Hour-Game-shipDraft
+# A game made in 2 hours: An exercise in getting started
+
+I started off today like I do many days: wondering why I can't find the motivation to do the many projects in my head.
+My usual problem is starting a project but burning out on some minor detail and never getting anywhere near completeing. By the next day, I was already thinking about a new, far more *exciting* project
+If only I could just **finish** a project, everything would fall into place as I could have the motivation to improve upon it.
+
+Thats where I had the idea: Make a deadline that forces me to finish a project **NOW**! I needed to make sure that I couldn't wriggle out of it by saying to myself "I can't possibly spare an entire day to program" so I made it into a challenge that I could fit into an evening.
+
 I didnt get nearly as much as I wanted to do done (obviously). I knew I wanted to make a spaceship game so I started off by making a csv file of ship hulls with hp values and costs. Then I set to work getting a basic file reader setup working with it and a class system to store them.
 
 Later on I refactored it to use a more general 'part' class that it inherits from. Even with a system this small, I feel like this was a worthwhile endevour to keep things clear in my head.
