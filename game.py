@@ -56,6 +56,15 @@ def draw(partsLibrary):
     rareParts = list()
     epicParts = list()
 
+    for part in partsLibrary:
+        if part.rarity == Rarity.COMMON:
+            commonParts.append(part)
+        elif part.rarity == Rarity.RARE:
+            rareParts.append(part)
+        elif part.rarity == Rarity.EPIC:
+            epicParts.append(part)
+        # TODO: ill add more rarities later
+        
     print random.randrange(1,1000)
     
 
