@@ -278,3 +278,4 @@ def fight(playerShip,enemyShip):
     enemyFightShip = FightShip(enemyShip)
     round(playerFightShip,enemyFightShip)
 fight(userShip,enemyShip)
+#comment
